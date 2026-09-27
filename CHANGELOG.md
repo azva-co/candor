@@ -312,6 +312,32 @@ Finding churn rather than directly through HTTP requests (#67).
 - Dockerfile's builder image bumped to `golang:1.27.1`, pinned by digest alongside the runtime
   distroless base image.
 
+### Dev tooling
+
+- `lint.yml` deleted: it duplicated `ci.yml`'s own `lint` job (`make lint`) as a second, fully
+  separate workflow, adding a whole extra billed job for the one line (`make lint-config`) it did
+  that `ci.yml` didn't already do. That line is now a step in `ci.yml`'s existing `lint` job.
+  `lint.yml`'s own job was never actually a required status check (its display name, "Run on
+  Ubuntu", differs from `ci.yml`'s `lint` job, which branch protection does require) - deleting it
+  doesn't touch what's required to merge. One real trade-off: `lint.yml` ran on every push to any
+  branch, no branch filter; `ci.yml` only triggers on push/PR against `main`, so a branch pushed
+  before a PR against `main` exists now gets no automated lint feedback until one is opened (once a
+  PR exists, every subsequent push to it still re-triggers `ci.yml`'s own `pull_request` event, same
+  as before). Accepted rather than widening `ci.yml`'s trigger to match, which would pull the whole
+  matrix/e2e/grafana-dashboard jobs along with it - this repo's own practice is to open a PR
+  immediately after pushing a branch, and `make lint` clean locally before every merge is already
+  the stated primary gate (`CLAUDE.md`), not CI.
+- `ci.yml`'s envtest matrix (`test (1.37)`/`test (1.31)`/`test (1.29)`) now only runs in full on
+  push to `main` - a pull request only runs 1.37, the version `go.mod` actually targets; 1.31/1.29
+  prove portability, which changes far less often than the code itself. Staged with a step-level
+  `if:`, not a job-level one: `test (1.31)`/`test (1.29)` are required status checks by exact name,
+  and a job whose steps are conditionally skipped still reports `success`, where a job-level skip
+  risks a PR left waiting on a check GitHub never runs for that trigger at all.
+- New `make ci` / `scripts/ci.sh`: runs `make build`/`test`/`lint`/`test-e2e` plus a Grafana
+  dashboard-import check mirroring `ci.yml`'s own `grafana-dashboard` job, in one command, for
+  local convenience (needs `docker`). Not solving a drift problem - every step calls a Makefile
+  target CI itself already calls, so there's no separate copy of the logic to drift out of sync.
+
 ## [0.1.0] - 2026-09-24
 
 First tagged release. Slices 1-9 of the delivery plan in `docs/design.md`: signal ingestion,
