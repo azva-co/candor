@@ -22,6 +22,7 @@ const (
 	testRepository = "ghcr.io/foo/bar"
 	testCurrentTag = "v1.0.0"
 	testNewTag     = "v1.2.0"
+	testPRURL      = "https://github.com/acme/gitops/pull/42"
 )
 
 // fakeGitHub stands in for the real GitHub REST API, returning just enough of each real response
@@ -77,7 +78,7 @@ func (f *fakeGitHub) handler() http.HandlerFunc {
 			var body struct{ Head, Base string }
 			_ = json.NewDecoder(r.Body).Decode(&body)
 			f.gotPRHead, f.gotPRBase = body.Head, body.Base
-			_, _ = fmt.Fprint(w, `{"number":42,"html_url":"https://github.com/acme/gitops/pull/42"}`)
+			_, _ = fmt.Fprintf(w, `{"number":42,"html_url":%q}`, testPRURL)
 
 		default:
 			f.t.Errorf("unexpected request: %s %s", r.Method, r.URL.Path)
@@ -119,7 +120,7 @@ func TestGitHubOpener_Open_OpensExpectedPullRequest(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	if url != "https://github.com/acme/gitops/pull/42" {
+	if url != testPRURL {
 		t.Errorf("Open() url = %q, want the created PR's html_url", url)
 	}
 	if want := "refs/heads/candor/trivy-abc123-0123456789ab"; fake.gotBranchRef != want {
@@ -156,6 +157,58 @@ func TestGitHubOpener_Open_DefaultsBaseBranchToMain(t *testing.T) {
 	}
 }
 
+// TestGitHubOpener_Open_UsesRepoHost is the regression test for a real finding from
+// /code-review medium: Open only ever consulted GitHubOpener.BaseURL (a test-only field), never
+// GitOpsRepo.Host, so a GitHub Enterprise repo's Host setting silently did nothing despite the
+// field's own doc comment promising it. The opener here has BaseURL left unset entirely - proving
+// the fake server is reached only because repo.Host was honored, not the test-only field.
+func TestGitHubOpener_Open_UsesRepoHost(t *testing.T) {
+	fake := &fakeGitHub{t: t, baseSHA: testBaseSHA}
+	srv := httptest.NewServer(fake.handler())
+	defer srv.Close()
+
+	opener := &GitHubOpener{}
+	repo := testRepo()
+	repo.Host = srv.URL + "/"
+	fix := Fix{Repository: testRepository, CurrentTag: testCurrentTag, NewTag: testNewTag}
+
+	url, err := opener.Open(t.Context(), "test-token", repo, fix, testFindingForPR())
+	if err != nil {
+		t.Fatal(err)
+	}
+	if url != testPRURL {
+		t.Errorf("Open() url = %q, want the created PR's html_url", url)
+	}
+}
+
+// TestGitHubOpener_Open_HostGetsEnterpriseAPIPrefix is the regression test for a real finding from
+// a second /code-review medium pass: repo.Host was applied straight to client.BaseURL via a raw
+// url.Parse, bypassing go-github's WithEnterpriseURLs/NewEnterpriseClient normalization that
+// appends "/api/v3/" - GitHub Enterprise's REST API 406s on every call without it. A plain
+// fakeGitHub.handler() test can't catch this (it matches request paths with strings.Contains,
+// which is satisfied with or without the prefix); this asserts the prefix is actually there.
+func TestGitHubOpener_Open_HostGetsEnterpriseAPIPrefix(t *testing.T) {
+	var gotPath string
+	fake := &fakeGitHub{t: t, baseSHA: testBaseSHA}
+	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		gotPath = r.URL.Path
+		fake.handler()(w, r)
+	}))
+	defer srv.Close()
+
+	opener := &GitHubOpener{}
+	repo := testRepo()
+	repo.Host = srv.URL
+	fix := Fix{Repository: testRepository, CurrentTag: testCurrentTag, NewTag: testNewTag}
+
+	if _, err := opener.Open(t.Context(), "test-token", repo, fix, testFindingForPR()); err != nil {
+		t.Fatal(err)
+	}
+	if !strings.HasPrefix(gotPath, "/api/v3/") {
+		t.Errorf("last request path = %q, want it prefixed with /api/v3/ - GitHub Enterprise's REST API otherwise returns 406 for every call", gotPath)
+	}
+}
+
 // TestGitHubOpener_Open_BranchAlreadyExists_ProceedsAnyway is the regression for a retry after an
 // earlier attempt on this exact fingerprint created the branch but didn't get as far as opening
 // the pull request (see tryProposePullRequest's doc comment: that's the only way this function
@@ -173,7 +226,7 @@ func TestGitHubOpener_Open_BranchAlreadyExists_ProceedsAnyway(t *testing.T) {
 	if err != nil {
 		t.Fatalf("expected Open to proceed past an already-existing branch, got error: %v", err)
 	}
-	if url != "https://github.com/acme/gitops/pull/42" {
+	if url != testPRURL {
 		t.Errorf("Open() url = %q, want the created PR's html_url", url)
 	}
 	if !strings.Contains(fake.gotUpdatedYAML, "tag: v1.2.0") {

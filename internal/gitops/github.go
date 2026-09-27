@@ -5,7 +5,6 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
-	"net/url"
 	"strings"
 	"time"
 
@@ -34,24 +33,34 @@ type Opener interface {
 // by internal/controller.FindingReconciler, which owns all Secret reads) rather than holding one
 // fixed client, since different SignalPolicies can name different repos and tokens.
 type GitHubOpener struct {
-	// BaseURL overrides the GitHub API base URL - for tests, pointed at an httptest.Server. Empty
-	// means the real public GitHub API.
+	// BaseURL overrides the GitHub API base URL for tests, pointed at an httptest.Server -
+	// repo.Host is the real, user-facing equivalent (GitHub Enterprise), checked first; this field
+	// only exists because tests construct a GitHubOpener directly, with no GitOpsRepo in hand yet
+	// at that point. Empty means the real public GitHub API.
 	BaseURL string
 }
 
 func (o *GitHubOpener) Open(ctx context.Context, token string, repo *candorv1alpha1.GitOpsRepo, fix Fix, finding *candorv1alpha1.Finding) (string, error) {
 	client := github.NewClient(&http.Client{Timeout: httpTimeout}).WithAuthToken(token)
-	if o.BaseURL != "" {
-		u, err := url.Parse(o.BaseURL)
+	apiBaseURL := repo.Host
+	if apiBaseURL == "" {
+		apiBaseURL = o.BaseURL
+	}
+	if apiBaseURL != "" {
+		// WithEnterpriseURLs, not a raw url.Parse into client.BaseURL: GitHub Enterprise's REST API
+		// is only reachable at http(s)://[hostname]/api/v3/ (a plain host or api root gets a 406),
+		// and this normalizes that suffix on rather than requiring every repo.Host value to already
+		// include it.
+		var err error
+		client, err = client.WithEnterpriseURLs(apiBaseURL, apiBaseURL)
 		if err != nil {
 			return "", fmt.Errorf("parsing base URL: %w", err)
 		}
-		client.BaseURL = u
 	}
 
 	base := repo.BaseBranch
 	if base == "" {
-		base = "main"
+		base = defaultBaseBranch
 	}
 
 	baseRef, _, err := client.Git.GetRef(ctx, repo.Owner, repo.Repo, "heads/"+base)
@@ -70,7 +79,7 @@ func (o *GitHubOpener) Open(ctx context.Context, token string, repo *candorv1alp
 	// for the same fingerprint - see FindingReconciler.tryProposePullRequest, which only marks a
 	// fingerprint done once Open returns a URL). Treating "already exists" as fatal would fail
 	// every subsequent retry permanently, forcing a human to delete the stray branch by hand.
-	branch := fmt.Sprintf("candor/%s-%s", finding.Name, shortFingerprint(finding.Status.Fingerprint))
+	branch := branchName(finding)
 	if _, _, err := client.Git.CreateRef(ctx, repo.Owner, repo.Repo, github.CreateRef{
 		Ref: "refs/heads/" + branch,
 		SHA: baseRef.GetObject().GetSHA(),
@@ -92,7 +101,7 @@ func (o *GitHubOpener) Open(ctx context.Context, token string, repo *candorv1alp
 		return "", fmt.Errorf("patching %s at %s: %w", repo.Path, repo.YAMLPath, err)
 	}
 
-	title := fmt.Sprintf("candor: bump %s from %s to %s", fix.Repository, fix.CurrentTag, fix.NewTag)
+	title := prTitle(fix)
 	if _, _, err := client.Repositories.UpdateFile(ctx, repo.Owner, repo.Repo, repo.Path, &github.RepositoryContentFileOptions{
 		Message: new(title),
 		Content: patched,
@@ -115,25 +124,6 @@ func (o *GitHubOpener) Open(ctx context.Context, token string, repo *candorv1alp
 	return pr.GetHTMLURL(), nil
 }
 
-// prBody renders the finding as the PR description - "the pull request is also a report"
-// (docs/design.md): no new surface for a GitOps team to learn, the ranked hypotheses and
-// confidence that would otherwise only live in the Finding object are right there in the PR.
-func prBody(fix Fix, finding *candorv1alpha1.Finding) string {
-	var b strings.Builder
-	fmt.Fprintf(&b, "Candor detected: %s\n\n", finding.Spec.Summary)
-	fmt.Fprintf(&b, "Bumps `%s` from `%s` to `%s`.\n", fix.Repository, fix.CurrentTag, fix.NewTag)
-
-	if len(finding.Status.Hypotheses) > 0 {
-		b.WriteString("\nRanked hypotheses:\n\n")
-		for _, h := range finding.Status.Hypotheses {
-			fmt.Fprintf(&b, "- **%s** (%d%% confidence): %s\n", h.Cause, h.Confidence, h.Rationale)
-		}
-	}
-
-	fmt.Fprintf(&b, "\n---\nOpened automatically by [Candor](https://github.com/teerakarna/candor) for Finding `%s/%s`.\n", finding.Namespace, finding.Name)
-	return b.String()
-}
-
 // isRefAlreadyExists reports whether err is GitHub's "Reference already exists" response to
 // creating a ref - the real API returns 422 Unprocessable Entity with exactly that message (not a
 // dedicated error type), so matching on it is the only way to distinguish "this branch is already
@@ -143,18 +133,4 @@ func isRefAlreadyExists(err error) bool {
 	return errors.As(err, &ghErr) &&
 		ghErr.Response != nil && ghErr.Response.StatusCode == http.StatusUnprocessableEntity &&
 		strings.Contains(strings.ToLower(ghErr.Message), "already exists")
-}
-
-// shortFingerprint truncates a fingerprint hash for use in a branch name - full-length is
-// unnecessary and makes branch names unwieldy; empty input (a Finding reconciled before its
-// fingerprint was ever set) falls back to a fixed label rather than producing a malformed name.
-func shortFingerprint(fingerprint string) string {
-	const length = 12
-	if fingerprint == "" {
-		return "unknown"
-	}
-	if len(fingerprint) <= length {
-		return fingerprint
-	}
-	return fingerprint[:length]
 }

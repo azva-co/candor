@@ -13,6 +13,7 @@ package gitops
 import (
 	"context"
 	"fmt"
+	"strings"
 
 	apierrors "k8s.io/apimachinery/pkg/api/errors"
 	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
@@ -75,6 +76,57 @@ func ComputeFix(ctx context.Context, c client.Client, finding *candorv1alpha1.Fi
 	}
 
 	return Fix{Repository: repository, CurrentTag: tag, NewTag: fixedVersion}, true, nil
+}
+
+// defaultBaseBranch is what GitHubOpener and GitLabOpener target when GitOpsRepo.BaseBranch is
+// unset - a shared constant so the two backends can't silently drift on the fallback.
+const defaultBaseBranch = "main"
+
+// branchName is the branch both backends create a fix on - fingerprint-suffixed and treated as
+// idempotent (see GitHubOpener.Open's own comment on this branch name for the full reasoning: a
+// retry after an earlier attempt got partway through must proceed past an already-existing branch,
+// not fail permanently).
+func branchName(finding *candorv1alpha1.Finding) string {
+	return fmt.Sprintf("candor/%s-%s", finding.Name, shortFingerprint(finding.Status.Fingerprint))
+}
+
+// prTitle is the pull/merge request title both backends use.
+func prTitle(fix Fix) string {
+	return fmt.Sprintf("candor: bump %s from %s to %s", fix.Repository, fix.CurrentTag, fix.NewTag)
+}
+
+// prBody renders the finding as the pull/merge request description both backends use - "the pull
+// request is also a report" (docs/design.md): no new surface for a GitOps team to learn, the
+// ranked hypotheses and confidence that would otherwise only live in the Finding object are right
+// there in the PR.
+func prBody(fix Fix, finding *candorv1alpha1.Finding) string {
+	var b strings.Builder
+	fmt.Fprintf(&b, "Candor detected: %s\n\n", finding.Spec.Summary)
+	fmt.Fprintf(&b, "Bumps `%s` from `%s` to `%s`.\n", fix.Repository, fix.CurrentTag, fix.NewTag)
+
+	if len(finding.Status.Hypotheses) > 0 {
+		b.WriteString("\nRanked hypotheses:\n\n")
+		for _, h := range finding.Status.Hypotheses {
+			fmt.Fprintf(&b, "- **%s** (%d%% confidence): %s\n", h.Cause, h.Confidence, h.Rationale)
+		}
+	}
+
+	fmt.Fprintf(&b, "\n---\nOpened automatically by [Candor](https://github.com/teerakarna/candor) for Finding `%s/%s`.\n", finding.Namespace, finding.Name)
+	return b.String()
+}
+
+// shortFingerprint truncates a fingerprint hash for use in a branch name - full-length is
+// unnecessary and makes branch names unwieldy; empty input (a Finding reconciled before its
+// fingerprint was ever set) falls back to a fixed label rather than producing a malformed name.
+func shortFingerprint(fingerprint string) string {
+	const length = 12
+	if fingerprint == "" {
+		return "unknown"
+	}
+	if len(fingerprint) <= length {
+		return fingerprint
+	}
+	return fingerprint[:length]
 }
 
 // uniformFixedVersion returns the single non-empty fixedVersion every vulnerability in the list

@@ -205,9 +205,13 @@ mutation. It only fires when a fix is independently, mechanically verifiable - t
 Trivy `VulnerabilityReport` where every vulnerability agrees on one `fixedVersion` - regardless of
 what the LLM recommends. No such fix, no PR.
 
+GitHub and GitLab (SaaS or self-hosted) are both supported - set `gitOpsRepo.provider` to pick one
+(defaults to `github`) and `gitOpsRepo.host` if it's a self-hosted GitLab or a GitHub Enterprise
+instance rather than the public SaaS API.
+
 The controller deliberately has no cluster-wide access to Secrets, so enabling this needs two
-things in the namespace: the GitHub token, and a Role granting the controller's ServiceAccount
-`get` on that one Secret specifically.
+things in the namespace: a token for the chosen provider, and a Role granting the controller's
+ServiceAccount `get` on that one Secret specifically.
 
 ```sh
 kubectl create secret generic github-token --namespace <your-namespace> \
@@ -249,6 +253,8 @@ metadata:
 spec:
   providers: [trivy]
   gitOpsRepo:
+    provider: github                # optional, defaults to github - set to "gitlab" for GitLab
+    # host: https://ghe.example.com # optional - self-hosted GitHub Enterprise or GitLab only
     owner: your-org
     repo: gitops-demo
     baseBranch: main               # optional, defaults to main
@@ -261,8 +267,13 @@ spec:
     windowSeconds: 86400
 ```
 
-The opened PR carries the finding, its ranked hypotheses, and confidence in the description - no
-new surface to learn beyond reading a normal PR.
+For GitLab, `owner` is the namespace the project lives in (a group, or `group/subgroup` for one
+nested in a subgroup), `repo` is the project name, and `secretRef` should point at a personal or
+project access token with `api` scope rather than a GitHub token - the RBAC and Secret-creation
+steps above are otherwise identical, just naming a GitLab token instead.
+
+The opened PR (or, for GitLab, merge request) carries the finding, its ranked hypotheses, and
+confidence in the description - no new surface to learn beyond reading a normal PR/MR.
 
 ### The cluster-wide panic switch and rate limit
 

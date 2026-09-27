@@ -88,16 +88,41 @@ type SignalPolicySpec struct {
 	WebhookReceiver *WebhookReceiver `json:"webhookReceiver,omitempty"`
 }
 
+// GitOpsProvider selects which git hosting backend a GitOpsRepo targets.
+// +kubebuilder:validation:Enum=github;gitlab
+type GitOpsProvider string
+
+const (
+	GitOpsProviderGitHub GitOpsProvider = "github"
+	GitOpsProviderGitLab GitOpsProvider = "gitlab"
+)
+
 // GitOpsRepo identifies the GitOps repository and file ProposePullRequest patches, and how to
-// authenticate to it. v1 supports GitHub only, matching every other GitHub-native integration
-// point already in Candor (releases, GHCR, cosign) - see #38's discussion for why this beats a
-// generic git library for a capability nothing here asks for yet.
+// authenticate to it. GitHub and GitLab are both supported (see Provider) via
+// internal/gitops.Opener implementations behind a common interface - see #38's discussion for why
+// that beats a generic git library for a capability nothing here asked for at the time.
 type GitOpsRepo struct {
-	// owner is the GitHub organisation or user that owns the repository, e.g. "azva-co".
+	// provider selects which git hosting backend this repository is on.
+	// +kubebuilder:default=github
+	// +optional
+	Provider GitOpsProvider `json:"provider,omitempty"`
+
+	// host overrides the provider's API base URL for a self-hosted instance (self-hosted GitLab,
+	// GitHub Enterprise). Empty means the provider's public SaaS API. Restricted to http(s) URLs -
+	// this only rejects an obviously malformed value at admission time, it is not a substitute for
+	// namespace-level RBAC on who may create a SignalPolicy: the controller sends that namespace's
+	// GitOps token to whatever host is named here.
+	// +kubebuilder:validation:Pattern=`^https?://.+$`
+	// +optional
+	Host string `json:"host,omitempty"`
+
+	// owner is the GitHub organisation/user or GitLab namespace that owns the repository, e.g.
+	// "azva-co". GitLab supports nested subgroups - for a project inside one, set this to the full
+	// namespace path, e.g. "group/subgroup".
 	// +required
 	Owner string `json:"owner"`
 
-	// repo is the repository name, e.g. "gitops-demo".
+	// repo is the repository (GitHub) or project (GitLab) name, e.g. "gitops-demo".
 	// +required
 	Repo string `json:"repo"`
 
@@ -119,8 +144,9 @@ type GitOpsRepo struct {
 	// +required
 	YAMLPath string `json:"yamlPath"`
 
-	// secretRef names a Secret in this SignalPolicy's namespace holding a GitHub token with
-	// contents and pull-request write access to Repo, under the key "token".
+	// secretRef names a Secret in this SignalPolicy's namespace holding a token with contents and
+	// pull/merge-request write access to Repo, under the key "token" - a GitHub personal access
+	// token or GitLab personal/project access token, matching Provider.
 	//
 	// The controller's ClusterRole deliberately grants no cluster-wide access to Secrets (KSV-0041:
 	// that would be equivalent to cluster-admin in most clusters). Setting GitOpsRepo requires this

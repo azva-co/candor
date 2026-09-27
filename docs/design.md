@@ -456,8 +456,24 @@ budget explicitly, or it is not a solution.
     surfaced a real, pre-existing, broader gap (`config/network-policy/` disconnected from
     `config/default` entirely, tracked separately as #64, not fixed here). `CHANGELOG.md` has the
     full list from all eight passes; not duplicated here.
-11. GitLab GitOps backend. `internal/gitops.Opener` is already an interface with one implementation
-    (`GitHubOpener`) - this is a second implementation behind it, not a core change.
+11. GitLab GitOps backend. **Done.** `internal/gitops.Opener` gained a second implementation,
+    `GitLabOpener`, dispatched alongside `GitHubOpener` by a new `MultiOpener` keyed on
+    `GitOpsRepo.Provider` (a closed CRD enum, defaults to `github`). `GitOpsRepo.Host` lets either
+    provider point at a self-hosted instance instead of the public SaaS API.
+
+    Several `/code-review high` passes found real issues, tracking severity mostly down each round:
+    a missing `gitlab.WithoutRetries()` meant a degraded GitLab instance could hold a call open for
+    minutes instead of failing at `httpTimeout`, matching `GitHubOpener`'s own no-retry behavior;
+    `GitHubOpener` never actually read the new `Host` field, so its own doc comment's GitHub
+    Enterprise promise did nothing; a later pass found `Host` was then applied to `client.BaseURL`
+    directly rather than through go-github's `WithEnterpriseURLs`, which is what actually appends
+    the `/api/v3/` suffix Enterprise's API requires; `GitLabOpener` dereferenced a branch's commit ID
+    with no nil check (GitLab's `CreateBranch` accepts a branch name directly as `Ref`, so the
+    preceding `GetBranch` call - and the dereference - could be, and was, removed entirely); GitLab's
+    `UpdateFile` was missing the `LastCommitID` optimistic-concurrency guard `GitHubOpener` already
+    has via `content.SHA`; and the Helm chart's bundled CRD copy (`charts/chart/templates/crd/`)
+    wasn't part of the regeneration this field's addition needed, silently pruning `provider`/`host`
+    on any Helm-based install (fixed per CONTRIBUTING.md's chart regeneration checklist).
 12. Fixture suite + published per-model accuracy. The evidence gap #7's answer already promises
     ("per-model accuracy is measured and published against a fixture suite, not asserted") and
     that Candor doesn't yet have. Required before any claim about a smaller or fine-tuned model's
