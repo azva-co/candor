@@ -8,6 +8,17 @@ updates:
     directory: "/"
     schedule:
       interval: "weekly"
+    groups:
+      # github/codeql-action ships init/autobuild/analyze/upload-sarif as four separate actions
+      # that must all be the same version within one workflow run - CodeQL refuses to run against
+      # a database whose config was written by a different version ("Loaded a configuration file
+      # for version X, but running version Y"). Dependabot bumps each action reference
+      # independently by default, so four separate PRs each bump exactly one of the four and each
+      # one's own CI run fails with that version-mismatch error until all four land together.
+      # Grouped so a codeql-action release becomes one PR bumping all four at once.
+      codeql-action:
+        patterns:
+          - "github/codeql-action/*"
   - package-ecosystem: "docker"
     directory: "/"
     schedule:
