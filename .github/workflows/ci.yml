@@ -26,10 +26,19 @@ jobs:
           go-version-file: go.mod
           cache: true
 
+      # Staged, not run in full on every PR: 1.31/1.29 only prove portability, which changes far
+      # less often than the code itself, so re-proving it on every push to a PR branch is mostly
+      # paying twice for the same answer. Full three-version matrix still runs on every push to
+      # main. Conditioned on the step, not the job (`if:` here, not on the job itself) - `test
+      # (1.31)`/`test (1.29)` are required status checks by exact name (branch protection), and a
+      # job this repeats reports success with all steps skipped just as well as one that actually
+      # ran; a job-level skip risks a PR left waiting on a check GitHub never runs at all.
       - name: Build
+        if: matrix.envtest-k8s-version == '1.37' || github.event_name != 'pull_request'
         run: make build
 
       - name: Test (envtest)
+        if: matrix.envtest-k8s-version == '1.37' || github.event_name != 'pull_request'
         run: make test
         env:
           ENVTEST_K8S_VERSION: ${{ matrix.envtest-k8s-version }}
@@ -44,6 +53,8 @@ jobs:
           go-version-file: go.mod
           cache: true
 
+      - name: Check linter configuration
+        run: make lint-config
       - name: Lint
         run: make lint
 
