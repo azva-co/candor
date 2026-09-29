@@ -15,10 +15,9 @@ permissions:
 
 jobs:
   publish:
-    # SHA-pinned to azva-co/mkdocs-publisher's main, same discipline as every third-party
-    # action in this repo (verified with `gh api repos/azva-co/mkdocs-publisher/commits/main`,
-    # not guessed) - bump manually when that repo's workflow changes. Repo transferred from
-    # teerakarna to azva-co 2026-09-29; this is the new owner, not a stale reference.
-    uses: azva-co/mkdocs-publisher/.github/workflows/publish.yml@1f59e4759ee8e86a7e70e772b03508fe865b4a71 # main
+    # SHA-pinned to azva-co/mkdocs-publisher's v1 tag, same discipline as every third-party
+    # action in this repo. mkdocs-publisher started tagging real releases 2026-09-29 (was
+    # SHA-pinned-to-main only before) - verified with `git rev-parse v1^{commit}`, not guessed.
+    uses: azva-co/mkdocs-publisher/.github/workflows/publish.yml@a6eb6d6e427d3473ca2c6693593af30f0555439c # v1
     with:
       working-directory: docs-site
