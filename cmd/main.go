@@ -270,10 +270,11 @@ func main() {
 		Client: mgr.GetClient(),
 		Scheme: mgr.GetScheme(),
 		LLM:    llmClient,
-		// Unlike LLM, this is always wired up rather than gated on an env var: GitHubOpener has
-		// no global "enabled" concept of its own - ProposePullRequest only ever activates
-		// per-namespace, opt-in, via that namespace's own SignalPolicy.Spec.GitOpsRepo.
-		GitOps: &gitops.GitHubOpener{},
+		// Unlike LLM, this is always wired up rather than gated on an env var: neither backend has
+		// a global "enabled" concept of its own - ProposePullRequest only ever activates
+		// per-namespace, opt-in, via that namespace's own SignalPolicy.Spec.GitOpsRepo, and which
+		// backend within that is GitOpsRepo.Provider's own choice, not this wiring's.
+		GitOps: &gitops.MultiOpener{GitHub: &gitops.GitHubOpener{}, GitLab: &gitops.GitLabOpener{}},
 	}).SetupWithManager(mgr); err != nil {
 		setupLog.Error(err, "Failed to create controller", "controller", "finding")
 		os.Exit(1)
