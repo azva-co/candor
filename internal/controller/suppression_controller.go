@@ -26,7 +26,7 @@ import (
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 
-	candorv1alpha1 "github.com/teerakarna/candor/api/v1alpha1"
+	candorv1alpha1 "github.com/azva-co/candor/api/v1alpha1"
 )
 
 // conditionExpired mirrors whether Suppression.spec.expiresAt has passed - the only state this

@@ -12,9 +12,9 @@ import (
 	"k8s.io/apimachinery/pkg/runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client/fake"
 
-	candorv1alpha1 "github.com/teerakarna/candor/api/v1alpha1"
-	"github.com/teerakarna/candor/internal/notify"
-	"github.com/teerakarna/candor/internal/signal"
+	candorv1alpha1 "github.com/azva-co/candor/api/v1alpha1"
+	"github.com/azva-co/candor/internal/notify"
+	"github.com/azva-co/candor/internal/signal"
 )
 
 func digestWebhookServer(t *testing.T) (url string, received chan notify.Digest) {

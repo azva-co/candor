@@ -1,7 +1,7 @@
 package signal
 
 import (
-	candorv1alpha1 "github.com/teerakarna/candor/api/v1alpha1"
+	candorv1alpha1 "github.com/azva-co/candor/api/v1alpha1"
 )
 
 // InAuditMode reports whether ProposePullRequest is currently disabled cluster-wide by the panic

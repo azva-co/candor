@@ -11,8 +11,8 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/client/fake"
 
-	candorv1alpha1 "github.com/teerakarna/candor/api/v1alpha1"
-	"github.com/teerakarna/candor/internal/llm"
+	candorv1alpha1 "github.com/azva-co/candor/api/v1alpha1"
+	"github.com/azva-co/candor/internal/llm"
 )
 
 // This file is #41: the volume test docs/design.md:189 requires before a brake counts as proven,

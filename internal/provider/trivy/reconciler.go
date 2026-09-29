@@ -10,7 +10,7 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	logf "sigs.k8s.io/controller-runtime/pkg/log"
 
-	"github.com/teerakarna/candor/internal/signal"
+	"github.com/azva-co/candor/internal/signal"
 )
 
 // Reconciler watches VulnerabilityReport objects and turns each one into a Finding via

@@ -11,7 +11,7 @@ plugins:
     manifests: dist/install.yaml
     output: charts
 projectName: candor
-repo: github.com/teerakarna/candor
+repo: github.com/azva-co/candor
 resources:
 - api:
     crdVersion: v1
@@ -20,7 +20,7 @@ resources:
   domain: dev
   group: candor
   kind: SignalPolicy
-  path: github.com/teerakarna/candor/api/v1alpha1
+  path: github.com/azva-co/candor/api/v1alpha1
   version: v1alpha1
 - api:
     crdVersion: v1
@@ -29,7 +29,7 @@ resources:
   domain: dev
   group: candor
   kind: Finding
-  path: github.com/teerakarna/candor/api/v1alpha1
+  path: github.com/azva-co/candor/api/v1alpha1
   version: v1alpha1
 - api:
     crdVersion: v1
@@ -38,7 +38,7 @@ resources:
   domain: dev
   group: candor
   kind: Suppression
-  path: github.com/teerakarna/candor/api/v1alpha1
+  path: github.com/azva-co/candor/api/v1alpha1
   version: v1alpha1
 - api:
     crdVersion: v1
@@ -46,6 +46,6 @@ resources:
   domain: dev
   group: candor
   kind: OperatingPolicy
-  path: github.com/teerakarna/candor/api/v1alpha1
+  path: github.com/azva-co/candor/api/v1alpha1
   version: v1alpha1
 version: "3"

@@ -28,9 +28,9 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	logf "sigs.k8s.io/controller-runtime/pkg/log"
 
-	candorv1alpha1 "github.com/teerakarna/candor/api/v1alpha1"
-	"github.com/teerakarna/candor/internal/provider"
-	"github.com/teerakarna/candor/internal/provider/webhook"
+	candorv1alpha1 "github.com/azva-co/candor/api/v1alpha1"
+	"github.com/azva-co/candor/internal/provider"
+	"github.com/azva-co/candor/internal/provider/webhook"
 )
 
 // SignalPolicyReconciler reconciles a SignalPolicy object

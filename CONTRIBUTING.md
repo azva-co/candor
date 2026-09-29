@@ -19,7 +19,7 @@ fingerprinting/budget model are still settling.
 - After a CRD or RBAC change, regenerate the Helm chart:
   `kubebuilder edit --plugins=helm/v2-alpha --output-dir=charts --force`. This **will** revert
   hand-maintained things back to their generated defaults — re-apply them every time:
-  - `charts/chart/values.yaml`: `manager.image.repository` back to `ghcr.io/teerakarna/candor`,
+  - `charts/chart/values.yaml`: `manager.image.repository` back to `ghcr.io/azva-co/candor`,
     and `manager.webhookReceiver.port` (the plugin doesn't know this key at all, so it's dropped
     entirely, not reset to a default - re-add the whole `webhookReceiver: { port: 9444 }` block)
   - `charts/chart/.helmignore`: the `dist/chart/*.tgz` line back to `*.tgz`

@@ -14,7 +14,7 @@ accuracy.**
 
 [Why Candor](why-candor.md){ .md-button .md-button--primary }
 [Get started](getting-started.md){ .md-button }
-[View on GitHub :fontawesome-brands-github:](https://github.com/teerakarna/candor){ .md-button }
+[View on GitHub :fontawesome-brands-github:](https://github.com/azva-co/candor){ .md-button }
 
 ---
 
@@ -70,7 +70,7 @@ Candor is an early, actively-developed build, shipped in small, individually-ver
 each one tested against a real Kubernetes control plane, not mocked away. Deterministic
 findings, content-addressed fingerprinting, LLM enrichment, a hard budget ceiling, Suppressions,
 the verification loop, and a generic webhook sink are done. See
-[the full delivery plan and rationale](https://github.com/teerakarna/candor/blob/main/docs/design.md)
+[the full delivery plan and rationale](https://github.com/azva-co/candor/blob/main/docs/design.md)
 for exactly what's shipped and what isn't yet.
 
 [Read the full case for Candor :material-arrow-right:](why-candor.md){ .md-button .md-button--primary }

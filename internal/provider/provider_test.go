@@ -3,8 +3,8 @@ package provider
 import (
 	"testing"
 
-	"github.com/teerakarna/candor/internal/provider/trivy"
-	"github.com/teerakarna/candor/internal/provider/webhook"
+	"github.com/azva-co/candor/internal/provider/trivy"
+	"github.com/azva-co/candor/internal/provider/webhook"
 )
 
 // Known can't reference trivy.ProviderName directly (see the comment in provider.go - it would

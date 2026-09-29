@@ -7,7 +7,7 @@ import (
 
 	"sigs.k8s.io/controller-runtime/pkg/client"
 
-	candorv1alpha1 "github.com/teerakarna/candor/api/v1alpha1"
+	candorv1alpha1 "github.com/azva-co/candor/api/v1alpha1"
 )
 
 // FindActiveSuppression returns the Suppression in namespace that currently mutes fingerprint, or

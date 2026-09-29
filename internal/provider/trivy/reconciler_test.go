@@ -15,9 +15,9 @@ import (
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 
-	candorv1alpha1 "github.com/teerakarna/candor/api/v1alpha1"
-	"github.com/teerakarna/candor/internal/provider"
-	"github.com/teerakarna/candor/internal/signal"
+	candorv1alpha1 "github.com/azva-co/candor/api/v1alpha1"
+	"github.com/azva-co/candor/internal/provider"
+	"github.com/azva-co/candor/internal/signal"
 )
 
 const testPolicyName = "policy"

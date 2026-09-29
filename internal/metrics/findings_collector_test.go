@@ -7,7 +7,7 @@ import (
 	"k8s.io/apimachinery/pkg/runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client/fake"
 
-	candorv1alpha1 "github.com/teerakarna/candor/api/v1alpha1"
+	candorv1alpha1 "github.com/azva-co/candor/api/v1alpha1"
 )
 
 func finding(namespace, name, severity, outcome string) *candorv1alpha1.Finding {

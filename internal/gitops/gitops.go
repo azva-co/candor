@@ -19,8 +19,8 @@ import (
 	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 
-	candorv1alpha1 "github.com/teerakarna/candor/api/v1alpha1"
-	"github.com/teerakarna/candor/internal/provider/trivy"
+	candorv1alpha1 "github.com/azva-co/candor/api/v1alpha1"
+	"github.com/azva-co/candor/internal/provider/trivy"
 )
 
 // Fix is a concrete, single-value image tag bump - the only kind of patch this slice computes.
@@ -111,7 +111,7 @@ func prBody(fix Fix, finding *candorv1alpha1.Finding) string {
 		}
 	}
 
-	fmt.Fprintf(&b, "\n---\nOpened automatically by [Candor](https://github.com/teerakarna/candor) for Finding `%s/%s`.\n", finding.Namespace, finding.Name)
+	fmt.Fprintf(&b, "\n---\nOpened automatically by [Candor](https://github.com/azva-co/candor) for Finding `%s/%s`.\n", finding.Namespace, finding.Name)
 	return b.String()
 }
 

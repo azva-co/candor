@@ -10,9 +10,9 @@ import (
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client/fake"
 
-	candorv1alpha1 "github.com/teerakarna/candor/api/v1alpha1"
-	"github.com/teerakarna/candor/internal/llm"
-	"github.com/teerakarna/candor/internal/metrics"
+	candorv1alpha1 "github.com/azva-co/candor/api/v1alpha1"
+	"github.com/azva-co/candor/internal/llm"
+	"github.com/azva-co/candor/internal/metrics"
 )
 
 // TestFindingReconciler_Metrics proves the self-observability metrics docs/design.md requires

@@ -15,10 +15,10 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/client/fake"
 
-	candorv1alpha1 "github.com/teerakarna/candor/api/v1alpha1"
-	"github.com/teerakarna/candor/internal/gitops"
-	"github.com/teerakarna/candor/internal/llm"
-	"github.com/teerakarna/candor/internal/provider/trivy"
+	candorv1alpha1 "github.com/azva-co/candor/api/v1alpha1"
+	"github.com/azva-co/candor/internal/gitops"
+	"github.com/azva-co/candor/internal/llm"
+	"github.com/azva-co/candor/internal/provider/trivy"
 )
 
 const (

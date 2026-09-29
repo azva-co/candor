@@ -40,16 +40,16 @@ import (
 	metricsserver "sigs.k8s.io/controller-runtime/pkg/metrics/server"
 	"sigs.k8s.io/controller-runtime/pkg/webhook"
 
-	candorv1alpha1 "github.com/teerakarna/candor/api/v1alpha1"
-	"github.com/teerakarna/candor/internal/controller"
-	"github.com/teerakarna/candor/internal/gitops"
-	"github.com/teerakarna/candor/internal/llm"
-	"github.com/teerakarna/candor/internal/llm/anthropic"
-	"github.com/teerakarna/candor/internal/llm/ollama"
-	"github.com/teerakarna/candor/internal/metrics"
-	"github.com/teerakarna/candor/internal/provider"
-	"github.com/teerakarna/candor/internal/provider/trivy"
-	signalwebhook "github.com/teerakarna/candor/internal/provider/webhook"
+	candorv1alpha1 "github.com/azva-co/candor/api/v1alpha1"
+	"github.com/azva-co/candor/internal/controller"
+	"github.com/azva-co/candor/internal/gitops"
+	"github.com/azva-co/candor/internal/llm"
+	"github.com/azva-co/candor/internal/llm/anthropic"
+	"github.com/azva-co/candor/internal/llm/ollama"
+	"github.com/azva-co/candor/internal/metrics"
+	"github.com/azva-co/candor/internal/provider"
+	"github.com/azva-co/candor/internal/provider/trivy"
+	signalwebhook "github.com/azva-co/candor/internal/provider/webhook"
 	// +kubebuilder:scaffold:imports
 )
 

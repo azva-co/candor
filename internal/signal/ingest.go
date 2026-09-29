@@ -13,9 +13,9 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/controller/controllerutil"
 	logf "sigs.k8s.io/controller-runtime/pkg/log"
 
-	candorv1alpha1 "github.com/teerakarna/candor/api/v1alpha1"
-	"github.com/teerakarna/candor/internal/metrics"
-	"github.com/teerakarna/candor/internal/notify"
+	candorv1alpha1 "github.com/azva-co/candor/api/v1alpha1"
+	"github.com/azva-co/candor/internal/metrics"
+	"github.com/azva-co/candor/internal/notify"
 )
 
 // Result reports what Ingest did, so callers (and tests) can observe the outcome without Ingest

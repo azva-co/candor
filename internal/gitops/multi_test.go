@@ -5,7 +5,7 @@ import (
 	"errors"
 	"testing"
 
-	candorv1alpha1 "github.com/teerakarna/candor/api/v1alpha1"
+	candorv1alpha1 "github.com/azva-co/candor/api/v1alpha1"
 )
 
 type recordingOpener struct {

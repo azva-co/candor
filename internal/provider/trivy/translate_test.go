@@ -5,7 +5,7 @@ import (
 
 	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
 
-	"github.com/teerakarna/candor/internal/signal"
+	"github.com/azva-co/candor/internal/signal"
 )
 
 const (

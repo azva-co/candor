@@ -10,7 +10,7 @@ import (
 
 	"github.com/google/go-github/v76/github"
 
-	candorv1alpha1 "github.com/teerakarna/candor/api/v1alpha1"
+	candorv1alpha1 "github.com/azva-co/candor/api/v1alpha1"
 )
 
 // httpTimeout bounds every GitHub REST call Open makes. Without it, go-github's default client has

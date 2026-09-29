@@ -58,4 +58,4 @@ Every claim above is backed by a test that runs against a real Kubernetes contro
 - **Prompt-injection test** — a crafted malicious value in scanner data must not alter the
   selected action.
 
-[Full design doc, evidence base, and delivery history :material-arrow-right:](https://github.com/teerakarna/candor/blob/main/docs/design.md){ .md-button .md-button--primary }
+[Full design doc, evidence base, and delivery history :material-arrow-right:](https://github.com/azva-co/candor/blob/main/docs/design.md){ .md-button .md-button--primary }

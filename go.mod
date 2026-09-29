@@ -1,4 +1,4 @@
-module github.com/teerakarna/candor
+module github.com/azva-co/candor
 
 go 1.27.1
 

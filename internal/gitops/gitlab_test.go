@@ -14,7 +14,7 @@ import (
 
 	gitlab "gitlab.com/gitlab-org/api/client-go"
 
-	candorv1alpha1 "github.com/teerakarna/candor/api/v1alpha1"
+	candorv1alpha1 "github.com/azva-co/candor/api/v1alpha1"
 )
 
 // fakeGitLab stands in for the real GitLab REST API, returning just enough of each real response

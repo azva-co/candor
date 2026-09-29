@@ -1,12 +1,12 @@
 # Candor
 
-[![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/teerakarna/candor/badge)](https://securityscorecards.dev/viewer/?uri=github.com/teerakarna/candor)
+[![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/azva-co/candor/badge)](https://securityscorecards.dev/viewer/?uri=github.com/azva-co/candor)
 
 A Kubernetes operator that ingests signals from security/observability tools (Trivy, and more
 later), uses an LLM to enrich them into ranked hypotheses, and proposes remediation as GitOps pull
 requests — with bounded LLM spend and a published record of its own accuracy.
 
-📖 **[Full docs, architecture, and the case for Candor →](https://teerakarna.github.io/candor/)**
+📖 **[Full docs, architecture, and the case for Candor →](https://azva-co.github.io/candor/)**
 
 **Status**: early build, shipped in slices — see [`docs/design.md`](docs/design.md) for exactly
 what's done.
@@ -43,7 +43,7 @@ what's done.
 ## Quickstart
 
 ```sh
-helm install candor oci://ghcr.io/teerakarna/charts/candor --version <version> \
+helm install candor oci://ghcr.io/azva-co/charts/candor --version <version> \
   --namespace candor-system --create-namespace
 ```
 
@@ -310,24 +310,24 @@ budget usage, cost-avoidance ratio) as a ConfigMap the kube-prometheus-stack Gra
 auto-discovers:
 
 ```sh
-helm upgrade --install candor oci://ghcr.io/teerakarna/charts/candor \
+helm upgrade --install candor oci://ghcr.io/azva-co/charts/candor \
   --set prometheus.enabled=true --set grafanaDashboard.enabled=true
 ```
 
 ## Installing without Helm
 
-Each [release](https://github.com/teerakarna/candor/releases) attaches a versioned `install.yaml`
+Each [release](https://github.com/azva-co/candor/releases) attaches a versioned `install.yaml`
 (all resources, generated fresh at release time — not a stale copy on `main`):
 
 ```sh
-kubectl apply -f https://github.com/teerakarna/candor/releases/download/<tag>/install.yaml
+kubectl apply -f https://github.com/azva-co/candor/releases/download/<tag>/install.yaml
 ```
 
 Both install paths are produced by the same release pipeline — nothing hand-built or committed to
 `main`, so what you install is always a specific, versioned, signed release. One content
 difference: NetworkPolicy support is currently Helm-only (`--set networkPolicy.enabled=true`), since
 `config/network-policy/` isn't wired into `config/default/kustomization.yaml` yet (tracked as
-[#64](https://github.com/teerakarna/candor/issues/64)), so a `kubectl apply -f install.yaml` install
+[#64](https://github.com/azva-co/candor/issues/64)), so a `kubectl apply -f install.yaml` install
 gets no NetworkPolicy at all.
 
 ## Building from source (contributors)

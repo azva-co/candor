@@ -5,7 +5,7 @@
 // (later), budget accounting (later) - happens once, here, not once per provider.
 package signal
 
-import candorv1alpha1 "github.com/teerakarna/candor/api/v1alpha1"
+import candorv1alpha1 "github.com/azva-co/candor/api/v1alpha1"
 
 // Severity levels, ordered low to high. Matches the enum on SignalPolicy.Spec.MinSeverity and
 // Finding.Spec.Severity.

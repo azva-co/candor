@@ -56,19 +56,19 @@ release:
     ## Container image and Helm chart
 
     ```
-    ghcr.io/teerakarna/candor:{{ .Tag }}
+    ghcr.io/azva-co/candor:{{ .Tag }}
     ```
 
     Signed with cosign (keyless, GitHub Actions OIDC) and carries a CycloneDX SBOM attestation.
     Verify with:
 
     ```
-    cosign verify --certificate-identity-regexp "^https://github.com/teerakarna/candor/" \
+    cosign verify --certificate-identity-regexp "^https://github.com/azva-co/candor/" \
       --certificate-oidc-issuer https://token.actions.githubusercontent.com \
-      ghcr.io/teerakarna/candor:{{ .Tag }}
+      ghcr.io/azva-co/candor:{{ .Tag }}
     ```
 
-    Helm chart: `oci://ghcr.io/teerakarna/charts/candor --version {{ .Version }}`
+    Helm chart: `oci://ghcr.io/azva-co/charts/candor --version {{ .Version }}`
 
     ## Verifying the binaries
 
@@ -77,7 +77,7 @@ release:
 
     ```
     cosign verify-blob --bundle checksums.txt.bundle \
-      --certificate-identity-regexp "^https://github.com/teerakarna/candor/" \
+      --certificate-identity-regexp "^https://github.com/azva-co/candor/" \
       --certificate-oidc-issuer https://token.actions.githubusercontent.com \
       checksums.txt
     ```

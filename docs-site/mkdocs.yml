@@ -3,9 +3,9 @@ site_description: >-
   A Kubernetes operator that ingests security/observability signals, enriches them with an LLM
   under a hard cost ceiling, and proposes fixes as GitOps pull requests — with a published record
   of its own accuracy.
-site_url: https://teerakarna.github.io/candor/
-repo_url: https://github.com/teerakarna/candor
-repo_name: teerakarna/candor
+site_url: https://azva-co.github.io/candor/
+repo_url: https://github.com/azva-co/candor
+repo_name: azva-co/candor
 edit_uri: edit/main/docs-site/docs/
 
 docs_dir: docs
@@ -85,4 +85,4 @@ nav:
 extra:
   social:
     - icon: fontawesome/brands/github
-      link: https://github.com/teerakarna/candor
+      link: https://github.com/azva-co/candor

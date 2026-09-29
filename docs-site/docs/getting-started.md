@@ -3,14 +3,14 @@
 ## Install
 
 ```sh
-helm install candor oci://ghcr.io/teerakarna/charts/candor --version <version> \
+helm install candor oci://ghcr.io/azva-co/charts/candor --version <version> \
   --namespace candor-system --create-namespace
 ```
 
 Every release is signed and carries a CycloneDX SBOM and build provenance — see
-[SECURITY.md](https://github.com/teerakarna/candor/blob/main/SECURITY.md) for how to verify one.
+[SECURITY.md](https://github.com/azva-co/candor/blob/main/SECURITY.md) for how to verify one.
 A versioned YAML bundle is also attached to each
-[release](https://github.com/teerakarna/candor/releases) if you'd rather not use Helm.
+[release](https://github.com/azva-co/candor/releases) if you'd rather not use Helm.
 
 Deterministic findings (Trivy `VulnerabilityReport` → `Finding`) work with zero configuration
 beyond a `SignalPolicy`:
@@ -96,7 +96,7 @@ or PagerDuty message.
 ## See the accuracy dashboard
 
 ```sh
-helm upgrade --install candor oci://ghcr.io/teerakarna/charts/candor \
+helm upgrade --install candor oci://ghcr.io/azva-co/charts/candor \
   --set prometheus.enabled=true --set grafanaDashboard.enabled=true
 ```
 
@@ -106,4 +106,4 @@ calls, enrichment skipped by reason, verification transitions, budget usage.
 ---
 
 Full configuration reference, contribution guide, and design rationale live in the
-[repository](https://github.com/teerakarna/candor).
+[repository](https://github.com/azva-co/candor).

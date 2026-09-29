@@ -17,7 +17,7 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/teerakarna/candor/internal/llm"
+	"github.com/azva-co/candor/internal/llm"
 )
 
 const (

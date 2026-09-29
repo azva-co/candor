@@ -17,7 +17,7 @@ import (
 	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
 	"k8s.io/apimachinery/pkg/runtime/schema"
 
-	"github.com/teerakarna/candor/internal/signal"
+	"github.com/azva-co/candor/internal/signal"
 )
 
 // ProviderName is how this provider identifies itself in Signal.Provider and how a SignalPolicy

@@ -24,10 +24,10 @@ import (
 	logf "sigs.k8s.io/controller-runtime/pkg/log"
 	"sigs.k8s.io/controller-runtime/pkg/manager"
 
-	candorv1alpha1 "github.com/teerakarna/candor/api/v1alpha1"
-	"github.com/teerakarna/candor/internal/metrics"
-	"github.com/teerakarna/candor/internal/notify"
-	"github.com/teerakarna/candor/internal/signal"
+	candorv1alpha1 "github.com/azva-co/candor/api/v1alpha1"
+	"github.com/azva-co/candor/internal/metrics"
+	"github.com/azva-co/candor/internal/notify"
+	"github.com/azva-co/candor/internal/signal"
 )
 
 // DigestRunnable sends the periodic per-namespace summary docs/design.md calls for ("findings

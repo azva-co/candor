@@ -1,7 +1,7 @@
 # Ollama dev sandbox
 
 A hardened local Ollama instance for developing/testing the Ollama LLM backend
-([issue #52](https://github.com/teerakarna/candor/issues/52)) without running an unsandboxed
+([issue #52](https://github.com/azva-co/candor/issues/52)) without running an unsandboxed
 process directly on your host with your own user's full privileges.
 
 Dev tool only: not part of the release build, not shipped anywhere, no Go package imports it -

@@ -3,7 +3,7 @@ package signal
 import (
 	"testing"
 
-	candorv1alpha1 "github.com/teerakarna/candor/api/v1alpha1"
+	candorv1alpha1 "github.com/azva-co/candor/api/v1alpha1"
 )
 
 func TestFingerprint_SameContentSameHash(t *testing.T) {
