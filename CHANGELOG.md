@@ -5,6 +5,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.2.0](https://github.com/teerakarna/candor/compare/v0.1.0...v0.2.0) (2026-09-30)
+
+
+### Added
+
+* add GitLab GitOps backend (slice 11) ([#89](https://github.com/teerakarna/candor/issues/89)) ([de8514d](https://github.com/teerakarna/candor/commit/de8514d778a47a1d4af9d7c5d3889739c33f6564))
+* automate versioning with release-please ([#96](https://github.com/teerakarna/candor/issues/96)) ([f8d81b6](https://github.com/teerakarna/candor/commit/f8d81b65d71f4de73c23e2bb838bf577639eb0d5))
+* generic webhook signal receiver, completing slice 10 ([#65](https://github.com/teerakarna/candor/issues/65)) ([abac8c6](https://github.com/teerakarna/candor/commit/abac8c6afd4f1e8abe43321d299227dde206969b))
+* Ollama LLM backend with backend-agnostic action validation ([#56](https://github.com/teerakarna/candor/issues/56)) ([046904e](https://github.com/teerakarna/candor/commit/046904eef70f279f9dfdb2ffa6ae162feb44bdf8))
+
 ## [Unreleased]
 
 ### Added
