@@ -15,9 +15,9 @@ permissions:
 
 jobs:
   publish:
-    # SHA-pinned to azva-co/mkdocs-publisher's v1 tag, same discipline as every third-party
+    # SHA-pinned to teerakarna/mkdocs-publisher's v1 tag, same discipline as every third-party
     # action in this repo. mkdocs-publisher started tagging real releases 2026-09-29 (was
     # SHA-pinned-to-main only before) - verified with `git rev-parse v1^{commit}`, not guessed.
-    uses: azva-co/mkdocs-publisher/.github/workflows/publish.yml@a6eb6d6e427d3473ca2c6693593af30f0555439c # v1
+    uses: teerakarna/mkdocs-publisher/.github/workflows/publish.yml@a6eb6d6e427d3473ca2c6693593af30f0555439c # v1
     with:
       working-directory: docs-site
