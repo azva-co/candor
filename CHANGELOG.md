@@ -20,6 +20,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   inbound signals from tools without a Kubernetes CRD (SonarQube, Falco, etc.) via one normalized
   JSON envelope - `SignalPolicy.spec.webhookReceiver` opts a namespace in. Completes slice 10
   (`docs/design.md`) alongside the Ollama backend above.
+- GitLab GitOps backend (`internal/gitops.GitLabOpener`), a second implementation of
+  `internal/gitops.Opener` alongside GitHub, dispatched by a new `MultiOpener` keyed on the new
+  `GitOpsRepo.provider` field (defaults to `github`). `GitOpsRepo.host` lets either provider point
+  at a self-hosted instance instead of the public SaaS API. Completes slice 11 (`docs/design.md`).
 
 ### Fixed
 

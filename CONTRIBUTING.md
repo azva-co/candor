@@ -110,7 +110,18 @@ first.
 
 ## Commit style
 
-Conventional commits (`feat:`, `fix:`, `docs:`, `chore:`) where practical.
+Conventional commits (`feat:`, `fix:`, `docs:`, `chore:`) where practical - enforced on the PR
+title specifically (`pr-title-lint.yml`), since squash-merge makes that title the commit message on
+`main`, which is what release-please reads.
+
+## Releases
+
+Versioning and `CHANGELOG.md` are handled by `release-please.yml`, not a person picking a number.
+It maintains a standing PR that bumps the version and changelog from Conventional Commits since the
+last release - merging that PR is the release, a deliberate choice rather than something automated
+like `dependabot-automerge.yml`. It only pushes the resulting git tag; `release.yml`'s existing
+goreleaser pipeline (binaries, cosign signing, SBOM, the actual GitHub Release) picks that up
+unchanged, exactly as it did for a hand-pushed tag before.
 
 ## On how this project is built
 

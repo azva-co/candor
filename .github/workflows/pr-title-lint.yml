@@ -1,0 +1,24 @@
+name: PR Title Lint
+
+# Squash-merge means the PR title becomes the commit message on main, and release-please-action
+# (release-please.yml) derives its version bump and changelog entries from that message's
+# Conventional Commits type - a title that doesn't conform is silently miscategorized or dropped,
+# not caught. This turns "conventional commits where practical" (CLAUDE.md) into an actual gate for
+# the one path (the squash commit) that release-please reads.
+
+on:
+  pull_request:
+    types: [opened, edited, synchronize, reopened]
+
+permissions:
+  contents: read
+
+jobs:
+  lint-pr-title:
+    permissions:
+      pull-requests: write # posts a comment explaining a failure; safe to drop if that's unwanted
+    runs-on: ubuntu-latest
+    steps:
+      - uses: amannn/action-semantic-pull-request@48f256284bd46cdaab1048c3721360e808335d50 # v6.1.1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

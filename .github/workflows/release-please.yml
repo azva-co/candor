@@ -1,0 +1,27 @@
+name: Release Please
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  release-please:
+    permissions:
+      contents: write
+      pull-requests: write
+    runs-on: ubuntu-latest
+    steps:
+      # Maintains a standing PR that bumps the version (release-please-config.json's
+      # skip-github-release: true) and CHANGELOG.md from Conventional Commits since the last
+      # release, computed fresh each run - it does not read the hand-written prose already in
+      # CHANGELOG.md. Merging that PR is a deliberate human decision, not automated (unlike
+      # dependabot-automerge.yml): cutting a release is a "someone decided this was ready" action,
+      # not something that should happen just because commits accumulated.
+      #
+      # Only pushes the git tag itself, deliberately never creates the GitHub Release -
+      # release.yml's existing goreleaser pipeline already owns that (binaries, cosign signing,
+      # SBOM, release notes), triggered unchanged by the tag this pushes.
+      - uses: googleapis/release-please-action@45996ed1f6d02564a971a2fa1b5860e934307cf7 # v5.0.0
