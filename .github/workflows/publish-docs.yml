@@ -15,9 +15,9 @@ permissions:
 
 jobs:
   publish:
-    # SHA-pinned to teerakarna/mkdocs-publisher's main, same discipline as every third-party
-    # action in this repo (verified with `git -C <clone of mkdocs-publisher> rev-parse main`,
-    # not guessed) - bump manually when that repo's workflow changes.
-    uses: teerakarna/mkdocs-publisher/.github/workflows/publish.yml@c2ac253310e1e7751babbe3b133d8716a2747ab1 # main
+    # SHA-pinned to teerakarna/mkdocs-publisher's v1 tag, same discipline as every third-party
+    # action in this repo. mkdocs-publisher started tagging real releases 2026-09-29 (was
+    # SHA-pinned-to-main only before) - verified with `git rev-parse v1^{commit}`, not guessed.
+    uses: teerakarna/mkdocs-publisher/.github/workflows/publish.yml@a6eb6d6e427d3473ca2c6693593af30f0555439c # v1
     with:
       working-directory: docs-site
