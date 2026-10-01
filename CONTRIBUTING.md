@@ -119,9 +119,11 @@ title specifically (`pr-title-lint.yml`), since squash-merge makes that title th
 Versioning and `CHANGELOG.md` are handled by `release-please.yml`, not a person picking a number.
 It maintains a standing PR that bumps the version and changelog from Conventional Commits since the
 last release - merging that PR is the release, a deliberate choice rather than something automated
-like `dependabot-automerge.yml`. It only pushes the resulting git tag; `release.yml`'s existing
-goreleaser pipeline (binaries, cosign signing, SBOM, the actual GitHub Release) picks that up
-unchanged, exactly as it did for a hand-pushed tag before.
+like `dependabot-automerge.yml`. Merging it creates both the git tag and a GitHub Release, but the
+release body you actually see is goreleaser's, not release-please's: `release.yml`'s pipeline,
+triggered by the tag, replaces it entirely (`release.mode: replace` in `.goreleaser.yaml`) with its
+own changelog, binaries, cosign signing, SBOM, and verification instructions - goreleaser's default
+would otherwise keep release-please's body unchanged and drop all of that silently.
 
 ## On how this project is built
 
