@@ -52,6 +52,15 @@ changelog:
 
 release:
   prerelease: auto
+  # release-please now creates the GitHub Release first (it owns tagging - see
+  # release-please-config.json's own comment), with its own terse, commit-derived notes and no
+  # footer. The default mode (keep-existing) would then make this entire header/footer block below
+  # dead: goreleaser discards its own freshly-built body outright whenever the existing release
+  # already has non-empty notes (confirmed against goreleaser's own getReleaseNotes source, not
+  # assumed from the docs alone - its wording undersells how total the replacement is). `replace`
+  # keeps this release always carrying goreleaser's own changelog + verification instructions,
+  # which is what actually matters here, not release-please's.
+  mode: replace
   footer: |
     ## Container image and Helm chart
 
